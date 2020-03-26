@@ -10,21 +10,22 @@ module.exports = {
         const { latitude, longitude, techs} = req.query;
         const techsArray = parseStringAsArray(techs);
 
+        console.log(latitude, longitude, techsArray)
+
         const devs = await Dev.find({
             techs: {
                 $in: techsArray
-				},
-				location: {
-					$near: {
-						$geometry: {
-							type: 'Point',
-							coordinates: [longitude, latitude]
-						},
-						$maxDistance: 10000
+			},
+			location: {
+				$near: {
+					$geometry: {
+						type: 'Point',
+						coordinates: [longitude, latitude]
 					},
+					$maxDistance: 10000,
 				},
-        })
-
-        return res.json(devs)
+			},
+        })        
+        return res.json({devs})
     }
 }

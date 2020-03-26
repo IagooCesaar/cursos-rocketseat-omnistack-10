@@ -11,6 +11,7 @@ module.exports = {
             github_username
         });
         if (dev) return res.json(dev)
+        console.log('Cadastrando novo dev: '+github_username)
     
         const response = await axios.get(`https://api.github.com/users/${github_username}`);
         
