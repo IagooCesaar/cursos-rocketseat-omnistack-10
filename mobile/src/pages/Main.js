@@ -18,6 +18,8 @@ import {
 import { MaterialIcons } from '@expo/vector-icons'
 
 import api from '../services/api';
+import {connect, disconnect, subscridbeToNewDevs} from '../services/socket';
+
 
 function Main({ navigation }) {
     const [currentRegion, setCurrentRegion ] = useState(null);
@@ -53,7 +55,19 @@ function Main({ navigation }) {
         getFromStorage();
     }, [])
 
-    
+    useEffect(() => {
+        subscridbeToNewDevs(dev => setDevs([...devs, dev]))
+    }, [devs])
+
+    function setupWebsocket() {
+        const { latitude, longitude } = currentRegion;
+        connect(
+            latitude, 
+            longitude,
+            techs
+        );
+    }   
+
     async function handleSearch() {
         console.log('Pesquisando devs pelas techs '+techs+' perto de ',currentRegion)
         const { latitude, longitude } = currentRegion;                
@@ -71,6 +85,7 @@ function Main({ navigation }) {
         await AsyncStorage.setItem('techs', techs);
 
         setDevs(response.data.devs)
+        setupWebsocket();
     }
 
     function handleRegionChanged(region) {
